@@ -1,0 +1,26 @@
+{
+  "name": "melsoft-content-library",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The Melsoft marketing team's photo and video library, read live from Google Drive. Sign-in for @melsoftacademy.com addresses only.",
+  "scripts": {
+    "dev": "vite",
+    "api": "node --env-file-if-exists=.env.local scripts/serve-api.mjs",
+    "build": "node --env-file-if-exists=.env.local scripts/snapshot.mjs --soft && vite build",
+    "preview": "vite preview",
+    "snapshot": "node --env-file-if-exists=.env.local scripts/snapshot.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "nodemailer": "^9.0.3",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.0.10"
+  }
+}

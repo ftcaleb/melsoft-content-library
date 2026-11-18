@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.vercel/
+.env
+.env.*
+!.env.example
+# The saved copy of the library lists every file in the Drive folder.
+# It's written at build time and must never be committed (this repo is public).
+data/
+*.log

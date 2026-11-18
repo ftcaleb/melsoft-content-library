@@ -1,0 +1,70 @@
+/* Melsoft palette and base styles, as on melsoftacademy.com. Flat colour
+   only: ink navy, maroon, the rose tint and neutrals. */
+
+:root {
+  --ink: #0a1733;
+  --maroon: #5e0743;
+  --text-2: #5b6478;
+  --text-3: #646c85; /* 5.2:1 on white, 4.9:1 on --surface */
+  --line: #e5e8f0;
+  --line-2: #ccd2df;
+  --surface: #f7f8fb;
+  --surface-2: #eef1f7;
+  --bg: #ffffff;
+  --tint-rose: #fbdde5;
+  --rad-pill: 100px;
+}
+
+/* Headlines are set in Canela on the main site. Its font file is licensed,
+   so it isn't in this public repo: "Canela" is used when it's installed,
+   otherwise Georgia with Canela's metrics, so lines break the same way. */
+@font-face {
+  font-family: "Canela Fallback";
+  src: local("Georgia"), local("Times New Roman"), local("Times");
+  size-adjust: 106.3%;
+  ascent-override: 72.9%;
+  descent-override: 21.2%;
+  line-gap-override: 18.8%;
+}
+
+/* Metric-matched stand-in while Inter loads, so text doesn't reflow. */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Helvetica");
+  size-adjust: 107.1%;
+  ascent-override: 90.4%;
+  descent-override: 22.5%;
+  line-gap-override: 0%;
+}
+
+* { box-sizing: border-box; }
+
+html { scrollbar-gutter: stable; }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", "Inter Fallback", system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Canela", "Canela Fallback", Georgia, serif;
+  font-weight: bold;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img { max-width: 100%; display: block; }
+
+#root { min-height: 100vh; }
