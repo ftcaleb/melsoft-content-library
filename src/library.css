@@ -417,6 +417,7 @@ html:has(.cl-page), html:has(.cl-page) body { overflow-x: clip; }
   .cl-bar__drive { order: 2; padding: 7px 13px; font-size: 13px; }
   .cl-bar__long { display: none; }
   .cl-signin { flex-direction: column; }
+  .cl-signin__field { flex: 0 0 auto; } /* in a column, flex: 1 would override its height */
   .cl-signin .cl-btn { width: 100%; }
   .cl-gate { padding: 48px 0 72px; }
   .cl-search { order: 3; flex-basis: 100%; max-width: none; margin-left: 0; height: 42px; }
