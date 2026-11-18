@@ -68,7 +68,7 @@ export default async function handler(req, res) {
   const key = signingKey();
   const rootId = driveFolderId();
   if (!key || !rootId) {
-    console.error("[library] Not configured: set DRIVE_FOLDER_ID and SMTP_PASS (or CONTENT_LIBRARY_SECRET).");
+    console.error("[library] Not configured: set DRIVE_FOLDER_ID and CONTENT_LIBRARY_SECRET.");
     res.setHeader("Cache-Control", "no-store");
     return res.status(503).json({ error: "not-configured" });
   }

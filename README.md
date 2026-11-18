@@ -4,9 +4,13 @@ The marketing team's photo and video library. It shows everything in the
 "Melsoft Content" Google Drive folder, grouped by folder. People can search it,
 open any file full size, download the original, or copy its Drive link.
 
-Only people with a **@melsoftacademy.com** email address can get in. They
-enter their work email and get a sign-in link by email. The link works for 30
-minutes, and the browser then stays signed in for 30 days.
+Only people who enter a **@melsoftacademy.com** email address can get in. No
+email is sent: entering the address opens the library, and that browser stays
+signed in for 30 days.
+
+Because nothing confirms the address, this keeps casual visitors out rather
+than proving who someone is. Anyone who knows the domain could type a made-up
+name on it.
 
 ## How it works
 
@@ -22,13 +26,12 @@ minutes, and the browser then stays signed in for 30 days.
   - If Drive can't be read, it serves the copy saved at build time
     (`data/snapshot.json`).
 - **`/api/auth`** handles sign-in:
-  - It emails sign-in links through Gmail SMTP.
-  - It turns a link into a session cookie (HttpOnly, sent only to `/api`).
+  - It checks the address is on melsoftacademy.com.
+  - It sets a session cookie (HttpOnly, sent only to `/api`).
   - It signs people out.
-- **Sign-in is stateless.** Links and sessions are HMAC-signed tokens, so
-  there is no database.
-  - Changing `CONTENT_LIBRARY_SECRET` (or `SMTP_PASS`, if no secret is set)
-    signs everyone out.
+- **Sign-in is stateless.** Sessions are HMAC-signed tokens, so there is no
+  database.
+  - Changing `CONTENT_LIBRARY_SECRET` signs everyone out.
   - Changing it is also the only way to end a session before its 30 days
     are up.
 
@@ -41,10 +44,7 @@ minutes, and the browser then stays signed in for 30 days.
    | Name | Value |
    | --- | --- |
    | `DRIVE_FOLDER_ID` | The Melsoft Content folder's ID, or its full Drive link |
-   | `SMTP_USER` | The Google Workspace address that sends sign-in links |
-   | `SMTP_PASS` | An app password for that account |
-   | `CONTENT_LIBRARY_SECRET` | A long random string (recommended) |
-   | `SITE_URL` | Optional. The address links should point at, e.g. `https://content.melsoftacademy.com` |
+   | `CONTENT_LIBRARY_SECRET` | A long random string (see `.env.example` for a one-liner) |
 
 3. Deploy. To use a subdomain such as `content.melsoftacademy.com`, add it
    under Project → Settings → Domains.
@@ -60,9 +60,6 @@ cp .env.example .env.local   # fill in at least DRIVE_FOLDER_ID
 npm run api                  # the api/ functions on :3101
 npm run dev                  # the page on http://localhost:5174
 ```
-
-Without `SMTP_USER` and `SMTP_PASS`, no email is sent. Sign-in links are
-printed in the `npm run api` terminal instead.
 
 ## Keep out of this repo
 

@@ -321,12 +321,6 @@ html:has(.cl-page), html:has(.cl-page) body { overflow-x: clip; }
 .cl-gate { flex: 1; padding: clamp(56px, 11vh, 128px) 0 96px; border-bottom: none; }
 .cl-gate .cl-lede { max-width: 560px; }
 .cl-gate__cta { margin-top: 28px; }
-.cl-gate__small { margin: 22px 0 0; font-size: 14.5px; line-height: 1.6; color: var(--text-3); }
-.cl-gate__small .cl-link { padding: 0; font-size: 14.5px; }
-.cl-gate__notice {
-  margin: 26px 0 0; max-width: 560px; padding: 12px 16px; border-radius: 12px;
-  background: var(--tint-rose); color: var(--maroon); font-size: 14.5px; font-weight: 600; line-height: 1.5;
-}
 
 .cl-signin { margin-top: 32px; display: flex; gap: 12px; max-width: 580px; }
 .cl-signin__field {

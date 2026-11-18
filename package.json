@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "The Melsoft marketing team's photo and video library, read live from Google Drive. Sign-in for @melsoftacademy.com addresses only.",
+  "description": "The Melsoft marketing team’s photo and video library, read live from Google Drive. For @melsoftacademy.com addresses only.",
   "scripts": {
     "dev": "vite",
     "api": "node --env-file-if-exists=.env.local scripts/serve-api.mjs",
@@ -15,7 +15,6 @@
     "node": ">=22"
   },
   "dependencies": {
-    "nodemailer": "^9.0.3",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
   },

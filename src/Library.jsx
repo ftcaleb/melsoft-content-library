@@ -9,8 +9,8 @@ import "./library.css";
    search engines (noindex).
 
    Team only: the list comes from /api/library, which answers only for a
-   signed-in @melsoftacademy.com address. Signing in emails a link
-   (api/auth.js). Nothing about the library is bundled into this code.
+   signed-in @melsoftacademy.com address. Entering one is the sign-in
+   (api/auth.js); no email is sent. Nothing about the library is bundled.
    Each top-level Drive folder is a folder here (/folders/<slug>); each
    subfolder inside it is an album section on the folder’s page.
 
@@ -537,23 +537,19 @@ const GateBar = ({ navigate }) => {
 
 const NOT_TEAM = "Use your @melsoftacademy.com email address.";
 
+/* Typing a @melsoftacademy.com address is the whole sign-in: the server
+   checks the domain and sets the session cookie, then the library loads. */
 const Gate = ({ status, navigate, onRetry }) => {
-  // ?signin=expired: the emailed link was too old (or tampered with).
-  const [notice] = useState(() => (typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("signin")));
   const [email, setEmail] = useState("");
-  const [phase, setPhase] = useState("idle"); // idle | sending | sent
-  const [sentTo, setSentTo] = useState("");
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    if (notice) window.history.replaceState(window.history.state, "", window.location.pathname);
-  }, [notice]);
-  useEffect(() => {
     document.title = status === "signin" ? "Sign in · Content library | Melsoft" : "Content library | Melsoft";
   }, [status]);
 
-  const send = async (e) => {
+  const signIn = async (e) => {
     e?.preventDefault();
     const raw = email.trim().toLowerCase();
     const full = raw && !raw.includes("@") ? `${raw}@melsoftacademy.com` : raw;
@@ -563,19 +559,19 @@ const Gate = ({ status, navigate, onRetry }) => {
       return;
     }
     setError(null);
-    setPhase("sending");
+    setBusy(true);
     try {
       const r = await fetch(AUTH, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "send", email: full, next: window.location.pathname }),
+        body: JSON.stringify({ action: "signin", email: full }),
       });
-      if (r.ok) { setSentTo(full); setPhase("sent"); return; }
+      if (r.ok) { onRetry(); return; } // the cookie is set: load the library
       const d = await r.json().catch(() => ({}));
-      setError(d.error === "domain" ? NOT_TEAM : "The email didn’t send. Try again in a minute.");
+      setError(d.error === "domain" ? NOT_TEAM : "That didn’t work. Try again in a minute.");
     } catch {
       setError("You seem to be offline. Check your connection and try again.");
     }
-    setPhase("idle");
+    setBusy(false);
   };
 
   let body;
@@ -598,34 +594,16 @@ const Gate = ({ status, navigate, onRetry }) => {
         <button type="button" className="cl-btn cl-btn--ink cl-gate__cta" onClick={onRetry}>Try again <Icon name="arrow-right" size={17} /></button>
       </>
     );
-  } else if (phase === "sent") {
-    body = (
-      <>
-        <span className="cl-label">Almost there</span>
-        <h1 className="cl-h1">Check your <em>inbox.</em></h1>
-        <p className="cl-lede" role="status">
-          We sent a sign-in link to <b>{sentTo}</b>. It works for 30 minutes. Open it in this browser and you&rsquo;ll stay
-          signed in for 30 days.
-        </p>
-        <p className="cl-gate__small">
-          Nothing after a few minutes? Check Spam, or{" "}
-          <button type="button" className="cl-link" onClick={() => { setPhase("idle"); setError(null); }}>use a different email</button>.
-        </p>
-      </>
-    );
   } else {
     body = (
       <>
         <span className="cl-label">For the Melsoft team</span>
         <h1 className="cl-h1">Sign in to the <em className="cl-nowrap">content library.</em></h1>
         <p className="cl-lede">
-          Every photo and video in the Melsoft Content Drive, for the team only. Enter your work email and
-          we&rsquo;ll send you a sign-in link.
+          Every photo and video in the Melsoft Content Drive, for the team only. Enter your
+          @melsoftacademy.com email to open it.
         </p>
-        {notice === "expired" && (
-          <p className="cl-gate__notice" role="alert">That sign-in link has expired. Links work for 30 minutes, so send yourself a new one.</p>
-        )}
-        <form className="cl-signin" onSubmit={send} noValidate>
+        <form className="cl-signin" onSubmit={signIn} noValidate>
           <label className={"cl-signin__field" + (error ? " is-error" : "")}>
             <span className="cl-sr">Work email</span>
             <Icon name="mail" size={17} />
@@ -634,8 +612,8 @@ const Gate = ({ status, navigate, onRetry }) => {
               onChange={(e) => { setEmail(e.target.value); if (error) setError(null); }}
               aria-invalid={!!error} aria-describedby={error ? "cl-signin-error" : undefined} />
           </label>
-          <button type="submit" className="cl-btn cl-btn--ink" disabled={phase === "sending"}>
-            {phase === "sending" ? "Sending…" : <>Email me a link <Icon name="arrow-right" size={17} /></>}
+          <button type="submit" className="cl-btn cl-btn--ink" disabled={busy}>
+            {busy ? "Opening…" : <>Open the library <Icon name="arrow-right" size={17} /></>}
           </button>
         </form>
         {error && <p className="cl-signin__error" id="cl-signin-error" role="alert">{error}</p>}
